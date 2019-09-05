@@ -5,6 +5,7 @@ from Match import Match
 import json
 import requests
 import os
+from twilio.rest import Client
 
 
 class TipBot:
@@ -13,12 +14,12 @@ class TipBot:
 
     def _initialize_headless_browser(self):
         opts = Options()
-        opts.headless = True
+        # opts.headless = True
         try:
             self.browser = Chrome(options=opts)
         except WebDriverException:
-            self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
-            # self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
+            # self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
+            self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
 
 
     def _authenticate_to_kicktipp(self):
@@ -59,9 +60,7 @@ class TipBot:
                         match.odd_home_team_wins = float(odd['sites'][0]['odds']['h2h'][0])
                         match.odd_away_team_wins = float(odd['sites'][0]['odds']['h2h'][1])
                         break
-                print(match.home_team, ": ", match.odd_home_team_wins)
-                print(match.away_team, ": ", match.odd_away_team_wins)
-                print(match.odd_home_team_wins - match.odd_away_team_wins)
+
                 most_recent_game_day_matches.append(match)
         print(most_recent_game_day_matches)
         return most_recent_game_day_matches
@@ -69,6 +68,7 @@ class TipBot:
     def _tip_each_match(self, match_list):
         for match in match_list:
             self._fill_tip_input_for_match(match)
+        self.sendWhatsApp(match_list)
 
     def _fill_tip_input_for_match(self, match):
         tip_tuple = self._get_expected_goals_for_match_as_tuple(match)
@@ -126,6 +126,29 @@ class TipBot:
 
         oddsArr = odds_json['data']
         return oddsArr
+
+    def sendWhatsApp(self, match_list):
+        msg = self.getMsgForMatches(match_list)
+        account_sid = "os.environ['TWILIO_ACCOUNT_SID']"
+        auth_token = "os.environ['TWILIO_AUTH_TOKEN']"
+        client = Client(account_sid, auth_token)
+
+        message = client.messages.create(
+                                    from_='whatsapp:+14155238886',
+                                    body=msg,
+                                    to='whatsapp:+4917647704597'
+                                )
+
+    def getMsgForMatches(self, match_list):
+        msg = 'Kicktip-NFL-Bot hat folgende Partien erfolgreich getippt:' + '\n'
+        for match in match_list:
+            msg += '\n'
+            tupel = self._get_expected_goals_for_match_as_tuple(match)
+            msg += str(tupel[0]) + ' ' + match.home_team + ' (' + str(match.odd_home_team_wins) + ')' + '\n'
+            msg += str(tupel[1]) + ' ' +  match.away_team + ' (' + str(match.odd_away_team_wins) + ')' + '\n'
+        return msg
+
+
 
 
 
