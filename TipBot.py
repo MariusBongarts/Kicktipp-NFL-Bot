@@ -54,14 +54,14 @@ class TipBot:
                             table_data_html=data_of_table_row[3]
                             )
                 for odd in odds:
-                    if odd['teams'][0] == match.home_team and odd['teams'][1] == match.away_team:
-                        print(odd)
-                        print(odd['sites'][0]['odds']['h2h'][0])
+                    awayTeamInside = match.away_team in odd['teams']
+                    if (odd['home_team'] == match.home_team and awayTeamInside):
                         match.odd_home_team_wins = float(odd['sites'][0]['odds']['h2h'][0])
                         match.odd_away_team_wins = float(odd['sites'][0]['odds']['h2h'][1])
                         break
                 print(match.home_team, ": ", match.odd_home_team_wins)
                 print(match.away_team, ": ", match.odd_away_team_wins)
+                print(match.odd_home_team_wins - match.odd_away_team_wins)
                 most_recent_game_day_matches.append(match)
         print(most_recent_game_day_matches)
         return most_recent_game_day_matches
@@ -80,15 +80,24 @@ class TipBot:
             inputs_fields[2].send_keys(tip_tuple[1])
 
     def _get_expected_goals_for_match_as_tuple(self, match):
-        probabilities = [match.odd_home_team_wins, match.odd_draw, match.odd_away_team_wins]
-        index_of_most_probable_event = probabilities.index(min(probabilities))
+        # negative => Home team wins
+        # positive => away team wins
+        diff = match.odd_home_team_wins - match.odd_away_team_wins
 
-        if index_of_most_probable_event == 0:
-            return 20, 13
-        elif index_of_most_probable_event == 1:
-            return 14, 17
-        elif index_of_most_probable_event == 2:
-            return 13, 20
+        if diff < -2:
+            return 20, 10
+        if diff < -1:
+            return 24, 17
+        if diff < 0:
+            return 23, 20
+        if diff > 2:
+            return 10, 20
+        if diff > 1:
+            return 17, 24
+        if diff > 0:
+            return 20, 23
+        else:
+            return 20, 23
 
     def _submit_all_tips(self):
         self.browser.find_element_by_name("submitbutton").click()
