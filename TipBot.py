@@ -18,8 +18,8 @@ class TipBot:
         try:
             self.browser = Chrome(options=opts)
         except WebDriverException:
-            # self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
-            self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
+            self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
+            # self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
 
 
     def _authenticate_to_kicktipp(self):
