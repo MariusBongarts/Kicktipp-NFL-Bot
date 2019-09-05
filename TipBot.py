@@ -17,17 +17,17 @@ class TipBot:
         try:
             self.browser = Chrome(options=opts)
         except WebDriverException:
-            # self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
-            self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
+            self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
+            # self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
 
 
     def _authenticate_to_kicktipp(self):
         self.browser.get('https://www.kicktipp.de/ran-nfl-tipps/profil/login')
 
-        # self.browser.find_element_by_id("kennung").send_keys(os.environ['EMAIL'])
-        # self.browser.find_element_by_id("passwort").send_keys(os.environ['PASSWORD'])
-        self.browser.find_element_by_id("kennung").send_keys('mariusbongarts2502@web.de')
-        self.browser.find_element_by_id("passwort").send_keys('controller12')
+        self.browser.find_element_by_id("kennung").send_keys(os.environ['EMAIL'])
+        self.browser.find_element_by_id("passwort").send_keys(os.environ['PASSWORD'])
+        # self.browser.find_element_by_id("kennung").send_keys('')
+        # self.browser.find_element_by_id("passwort").send_keys('')
         self.browser.find_element_by_name("submitbutton").click()
 
     def _go_to_tip_submission(self):
@@ -37,9 +37,6 @@ class TipBot:
         most_recent_game_day_matches = []
 
         odds = self.getOdds()
-        print(odds[0]['teams'])
-        print(odds[1]['teams'])
-        print(len(odds))
 
 
         # Scrape the html to gather the required information
@@ -63,7 +60,8 @@ class TipBot:
                         match.odd_home_team_wins = float(odd['sites'][0]['odds']['h2h'][0])
                         match.odd_away_team_wins = float(odd['sites'][0]['odds']['h2h'][1])
                         break
-                print(match)
+                print(match.home_team, ": ", match.odd_home_team_wins)
+                print(match.away_team, ": ", match.odd_away_team_wins)
                 most_recent_game_day_matches.append(match)
         print(most_recent_game_day_matches)
         return most_recent_game_day_matches
