@@ -14,7 +14,7 @@ class TipBot:
 
     def _initialize_headless_browser(self):
         opts = Options()
-        # opts.headless = True
+        opts.headless = True
         try:
             self.browser = Chrome(options=opts)
         except WebDriverException:
