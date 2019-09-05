@@ -24,6 +24,8 @@ jobs:
           EMAIL: $(email)
           PASSWORD: $(password)
           CHROMEDRIVER: $(chromedriver)
+          TWILIO_ACCOUNT_SID: $(twilio_account_sid)
+          TWILIO_AUTH_TOKEN: $(twilio_auth_token)
 schedules:
 - cron: "0 12 * * 3"
   displayName: Weekly Wednesday build
