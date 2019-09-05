@@ -69,7 +69,7 @@ class TipBot:
     def _tip_each_match(self, match_list):
         for match in match_list:
             self._fill_tip_input_for_match(match)
-        msg = getMsgForMatches(match_list)
+        msg = self.getMsgForMatches(match_list)
         self.sendWhatsApp(msg)
 
     def _fill_tip_input_for_match(self, match):
