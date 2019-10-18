@@ -17,7 +17,7 @@ class TipBot:
         opts = Options()
         opts.headless = True
         try:
-            self.browser = Chrome(options=opts)
+            self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
         except WebDriverException:
             self.browser = Chrome(executable_path=os.environ['CHROMEDRIVER'], options=opts)
             # self.browser = Chrome('C:/Users/mariu/Projekte/chromeExtensions/webMarker/WebMarkerClient/e2e/chromedriver.exe', options=opts)
