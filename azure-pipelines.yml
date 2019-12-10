@@ -1,6 +1,6 @@
 ---
 jobs:
-  - job: "Run_bot"
+  - job: 'Run_bot'
     pool:
       vmImage: 'vs2017-win2016'
     strategy:
@@ -15,11 +15,11 @@ jobs:
           versionSpec: $(python.version)
           architecture: x64
 
-      - script: "pip install selenium && pip install requests && pip install twilio && npm -g install chromedriver@76.0.0"
-        displayName: "Install dependencies"
+      - script: 'pip install selenium && pip install requests && pip install twilio && npm -g install chromedriver@76.0.0'
+        displayName: 'Install dependencies'
 
-      - powershell: "python TipBot.py"
-        displayName: "Run tipping bot."
+      - powershell: 'python TipBot.py'
+        displayName: 'Run tipping bot.'
         env:
           EMAIL: $(email)
           PASSWORD: $(password)
@@ -27,7 +27,7 @@ jobs:
           TWILIO_ACCOUNT_SID: $(twilio_account_sid)
           TWILIO_AUTH_TOKEN: $(twilio_auth_token)
 schedules:
-- cron: "0 12 * * 3"
+- cron: '0 12 * * 3'
   displayName: Weekly Wednesday build
   branches:
     include:
